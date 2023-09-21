@@ -1,3 +1,21 @@
-# This is my first commit
-# This is my second commit
-# This is my third commit
+terraform {
+  required_providers {
+    random = {
+      source = "hashicorp/random"
+      version = "3.5.1"
+    }
+  }
+}
+
+provider "random" {
+  # Configuration options
+}
+
+resource "random_string" "bucket_name" {
+  length           = 8
+  special          = false
+}
+
+output "random_bucket_name_result" {
+  value = random_string.bucket_name.result
+}
