@@ -1,100 +1,182 @@
 ## Semantic Versioning
 
-This project is going utilize semantic versioning for its tagging.
-[semver.org](https://semver.org/)
+Our project adopts **Semantic Versioning** for release tagging.
 
-The general format:
+**Format:** `MAJOR.MINOR.PATCH` e.g., `1.0.1`
 
- **MAJOR.MINOR.PATCH**, eg. `1.0.1`
+- **MAJOR**: Incompatible API changes
+- **MINOR**: Backward-compatible feature additions
+- **PATCH**: Backward-compatible bug fixes
 
-- **MAJOR** version when you make incompatible API changes
-- **MINOR** version when you add functionality in a backward compatible manner
-- **PATCH** version when you make backward compatible bug fixes
+🔗 [Learn More about SemVer](https://semver.org/)
 
-## Install the Terraform CLI
+---
 
-### Considerations with the Terraform CLI changes
-The Terraform CLI installation instructions have changed due to gpg keyring changes. So we needed refer to the latest install CLI instructions via Terraform Documentation and change the scripting for install.
+## Setting Up Terraform CLI
 
-[Install Terraform CLI](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+**Note:** Due to recent GPG keyring updates, Terraform CLI installation steps have been revised. Please follow the latest instructions as provided by Terraform's official documentation.
 
+🔗 [Terraform CLI Installation Guide](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
-### Considerations for Linux Distribution
+---
 
-This project is built against Ubunutu.
-Please consider checking your Linux Distrubtion and change accordingly to distrubtion needs. 
+### Tailored for Ubuntu
 
-[How To Check OS Version in Linux](
-https://www.cyberciti.biz/faq/how-to-check-os-version-in-linux-command-line/)
+This project is optimized for Ubuntu. Ensure you're using the right Linux distribution or make necessary adjustments.
 
-Example of checking OS Version:
+To check your OS version, run:
 
-```
+```bash
 $ cat /etc/os-release
-
-PRETTY_NAME="Ubuntu 22.04.3 LTS"
-NAME="Ubuntu"
-VERSION_ID="22.04"
-VERSION="22.04.3 LTS (Jammy Jellyfish)"
-VERSION_CODENAME=jammy
-ID=ubuntu
-ID_LIKE=debian
-HOME_URL="https://www.ubuntu.com/"
-SUPPORT_URL="https://help.ubuntu.com/"
-BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
-PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
-UBUNTU_CODENAME=jammy
 ```
 
-### Refactoring into Bash Scripts
+🔗 [How to Verify Linux OS Version](https://www.cyberciti.biz/faq/how-to-check-os-version-in-linux-command-line/)
 
-While fixing the Terraform CLI gpg depreciation issues we notice that bash scripts steps were a considerable amount more code. So we decided to create a bash script to install the Terraform CLI.
+---
 
-This bash script is located here: [./bin/install_terraform_cli](./bin/install_terraform_cli)
+### Scripting the Terraform CLI Installation
 
-- This will keep the Gitpod Task File ([.gitpod.yml](.gitpod.yml)) tidy.
-- This allow us an easier to debug and execute manually Terraform CLI install
-- This will allow better portablity for other projects that need to install Terraform CLI.
+To tackle GPG depreciation concerns, we've encapsulated the installation steps into a bash script.
 
-#### Shebang Considerations
+📂 **Path:** [./bin/install_terraform_cli](./bin/install_terraform_cli)
 
-A Shebang (prounced Sha-bang) tells the bash script what program that will interpet the script. eg. `#!/bin/bash`
+Benefits:
+- Keeps the Gitpod Configuration tidy
+- Simplifies manual debugging and execution
+- Enhances reuse across different projects
 
-ChatGPT recommended this format for bash: `#!/usr/bin/env bash`
+**Shebang Best Practices:**
 
-- for portability for different OS distributions 
--  will search the user's PATH for the bash executable
+Always start your bash scripts with `#!/usr/bin/env bash` to ensure cross-OS compatibility.
 
-https://en.wikipedia.org/wiki/Shebang_(Unix)
+🔗 [Learn about Shebangs](https://en.wikipedia.org/wiki/Shebang_(Unix))
 
-#### Execution Considerations
+**Execution Tips:**
 
-When executing the bash script we can use the `./` shorthand notiation to execute the bash script.
+- Directly: `./bin/install_terraform_cli`
+- In `.gitpod.yml`: `source ./bin/install_terraform_cli`
 
-eg. `./bin/install_terraform_cli`
+**Linux Permissions:**
 
-If we are using a script in .gitpod.yml  we need to point the script to a program to interpert it.
+For script execution, modify permissions:
 
-eg. `source ./bin/install_terraform_cli`
-
-#### Linux Permissions Considerations
-
-In order to make our bash scripts executable we need to change linux permission for the fix to be exetuable at the user mode.
-
-```sh
+```bash
 chmod u+x ./bin/install_terraform_cli
 ```
 
-alternatively:
+Or:
 
-```sh
+```bash
 chmod 744 ./bin/install_terraform_cli
 ```
 
-https://en.wikipedia.org/wiki/Chmod
+🔗 [Understand Linux Permissions](https://en.wikipedia.org/wiki/Chmod)
 
-## Gitpod Lifecycle
+---
 
-We need to be careful when using the Init because it will not rerun if we restart an existing workspace.
+## Gitpod Workflow Tips
 
-https://www.gitpod.io/docs/configure/workspaces/tasks
+Beware: Initializing in Gitpod won't re-trigger if you reboot an existing workspace.
+
+🔗 [Gitpod Workspace Configuration](https://www.gitpod.io/docs/configure/workspaces/tasks)
+
+---
+
+## Environment Variables (Env Vars) Essentials
+
+**Viewing All Env Vars:** `env`
+
+**Filtering Specific Env Vars:** `env | grep AWS_`
+
+**Setting & Unsetting:**
+
+```bash
+export HELLO='world'
+unset HELLO
+```
+
+**Within Scripts:**
+
+```bash
+#!/usr/bin/env bash
+
+HELLO='world'
+echo $HELLO
+```
+
+**Displaying Vars:** `echo $HELLO`
+
+📌 Remember: New terminal instances might not inherit Env Vars. Make them persistent using `.bash_profile`.
+
+---
+
+## AWS CLI Setup
+
+Install the AWS CLI using: [`./bin/install_aws_cli`](./bin/install_aws_cli)
+
+🔗 [AWS CLI Setup Guide](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+
+Test your AWS credentials:
+
+```bash
+aws sts get-caller-identity
+```
+
+You should receive a JSON payload confirming your identity.
+
+---
+
+## Dive into Terraform
+
+**Terraform Registry:** A hub for providers and modules.
+
+🔗 [Visit Terraform Registry](https://registry.terraform.io/)
+
+- **Providers:** Interfaces to external APIs enabling resource creation.
+- **Modules:** Enables modular, reusable Terraform code.
+
+🔗 [Sample Random Provider](https://registry.terraform.io/providers/hashicorp/random)
+
+**Terraform Commands Overview:**
+
+- **Init:** `terraform init` (Initialize a new project)
+- **Plan:** `terraform plan` (Preview changes)
+- **Apply:** `terraform apply` (Execute changes)
+- **Destroy:** `terraform destroy` (Remove resources)
+
+**File Management:**
+
+- **Lock Files:** Commit `.terraform.lock.hcl` to version control.
+- **State Files:** Never commit `.terraform.tfstate` or `.terraform.tfstate.backup` to VCS.
+
+---
+
+## Terraform Cloud Login Workaround in Gitpod
+
+`terraform login` might malfunction in Gitpod's browser-based VSCode. As a remedy:
+
+1. Manually generate a token:
+🔗 [Generate Token](https://app.terraform.io/app/settings/tokens?source=terraform-login)
+
+2. Create and edit the credentials file:
+
+```bash
+touch /home/gitpod/.terraform.d/credentials.tfrc.json
+open /home/gitpod/.terraform.d/credentials.tfrc.json
+```
+
+Replace `YOUR-TERRAFORM-CLOUD-TOKEN` with your token in the below content:
+
+```json
+{
+  "credentials": {
+    "app.terraform.io": {
+      "token": "YOUR-TERRAFORM-CLOUD-TOKEN"
+    }
+  }
+}
+```
+
+For convenience, we've scripted this process:
+
+📂 [Generate Credentials](bin/generate_tfrc_credentials)
