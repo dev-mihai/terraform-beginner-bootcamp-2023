@@ -47,3 +47,22 @@ In the context of Terraform Cloud, any file named `*.auto.tfvars` will be automa
 ### order of terraform variables
 
 The order of precedence for Terraform variables is as follows: command-line flags, environment variables, `auto.tfvars` and its named variants, and lastly the `terraform.tfvars` file. This means that variables defined with the `-var` flag will override those defined in the `terraform.tfvars` or `*.auto.tfvars` files.
+
+## Dealing With Configuration Drift
+
+## What happens if we lose our state file?
+
+If you lose your statefile, you most likley have to tear down all your cloud infrastructure manually.
+
+You can use terraform port but it won't for all cloud resources. You need check the terraform providers documentation for which resources support import.
+
+### Fix Missing Resources with Terraform Import
+
+`terraform import aws_s3_bucket.bucket bucket-name`
+
+[Terraform Import](https://developer.hashicorp.com/terraform/cli/import)
+[AWS S3 Bucket Import](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket#import)
+
+### Fix Manual Configuration
+
+If someone manually deletes or modifies a cloud resource using ClickOps, running a Terraform plan will aim to restore our infrastructure to its desired state, addressing the configuration drift.
