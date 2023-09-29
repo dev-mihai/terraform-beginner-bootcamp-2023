@@ -1,88 +1,86 @@
-# Terraform Beginner Bootcamp 2023 - Week 1
+# Terraform Beginner Bootcamp 2023: Week 1 Breakdown
 
-## Root Module Structure
+## Overview of Root Module Structure
 
-Our root module structure is as follows:
+Here is a typical structure for your root module in a Terraform project:
 
 ```
 PROJECT_ROOT
 │
-├── main.tf                 # everything else.
-├── variables.tf            # stores the structure of input variables
-├── terraform.tfvars        # the data of variables we want to load into our terraform project
-├── providers.tf            # defined required providers and their configuration
-├── outputs.tf              # stores our outputs
-└── README.md               # required for root modules
+├── main.tf                 # General configurations.
+├── variables.tf            # Defines the structure of input variables.
+├── terraform.tfvars        # Contains variable values to be injected into the Terraform project.
+├── providers.tf            # Specifies required providers and their settings.
+├── outputs.tf              # Captures output values.
+└── README.md               # Documentation for the root module.
 ```
 
-[Standard Module Structure](https://developer.hashicorp.com/terraform/language/modules/develop/structure)
+Refer to the official [Standard Module Structure](https://developer.hashicorp.com/terraform/language/modules/develop/structure).
 
-### Terraform Cloud Variables
+### Setting Variables in Terraform Cloud 
 
-In terraform we can set two kind of variables:
-- Enviroment Variables - those you would set in your bash terminal eg. AWS credentials
-- Terraform Variables - those that you would normally set in your tfvars file
+Terraform allows for two types of variables:
+- **Environment Variables**: Set in your terminal (e.g., AWS credentials).
+- **Terraform Variables**: Typically set within your `tfvars` file.
 
-We can set Terraform Cloud variables to be sensitive so they are not shown visibliy in the UI.
+Remember, sensitive variables in Terraform Cloud can be concealed in the UI for security.
 
-### Loading Terraform Input Variables
+### Injecting Terraform Input Variables
 
-[Terraform Input Variables](https://developer.hashicorp.com/terraform/language/values/variables)
+Explore more on [Terraform Input Variables](https://developer.hashicorp.com/terraform/language/values/variables).
 
-### var flag
-We can use the `-var` flag to set an input variable or override a variable in the tfvars file eg. `terraform -var user_ud="my-user_id"`
+#### Using the `-var` Flag
 
-### var-file flag
+Override or define input variables using `-var`. For instance, `terraform apply -var user_id="my-user_id"`.
 
-The `-var-file` flag allows users to specify a file from which Terraform will load variable values, which can be useful for segregating environment-specific variables. By default, Terraform does not recognize any file with the tfvars extension, unless specified using this flag, for instance, `terraform apply -var-file="custom.tfvars"`.
+#### Leveraging the `-var-file` Flag
 
-### terraform.tvfars
+This flag lets you point to a specific file from which Terraform will fetch variable values. It's helpful for maintaining separate variables per environment. Example: `terraform apply -var-file="custom.tfvars"`.
 
-This is the default file to load in terraform variables in blunk
+#### Default Variable File: `terraform.tfvars`
 
-### auto.tfvars
+This file is Terraform's go-to for default variable values.
 
-In the context of Terraform Cloud, any file named `*.auto.tfvars` will be automatically loaded, providing a convenient method for variable definitions without needing explicit flag invocations. This is especially useful in CI/CD pipelines integrated with Terraform Cloud, where variables can be dynamically generated and saved with this naming convention.
+#### Automatic Variable Files: `*.auto.tfvars`
 
-### order of terraform variables
+Within Terraform Cloud, files named `*.auto.tfvars` are auto-loaded, simplifying variable management, especially in CI/CD setups with Terraform Cloud.
 
-The order of precedence for Terraform variables is as follows: command-line flags, environment variables, `auto.tfvars` and its named variants, and lastly the `terraform.tfvars` file. This means that variables defined with the `-var` flag will override those defined in the `terraform.tfvars` or `*.auto.tfvars` files.
+#### Variable Precedence in Terraform
 
-## Dealing With Configuration Drift
+Terraform's variable hierarchy is: command-line flags > environment variables > `auto.tfvars` and its variants > `terraform.tfvars`.
 
-## What happens if we lose our state file?
+## Addressing Configuration Drift
 
-If you lose your statefile, you most likley have to tear down all your cloud infrastructure manually.
+### Lost State File: What Next?
 
-You can use terraform port but it won't for all cloud resources. You need check the terraform providers documentation for which resources support import.
+Misplacing a state file likely means manually dismantling your cloud setup. While `terraform import` can help, it might not cover all resources. Always refer to the relevant Terraform provider documentation for specific import capabilities.
 
-### Fix Missing Resources with Terraform Import
+#### Importing Missing Resources Using Terraform 
 
-`terraform import aws_s3_bucket.bucket bucket-name`
+Use the import command to bring in resources, like: 
+`terraform import aws_s3_bucket.bucket bucket-name`.
 
-[Terraform Import](https://developer.hashicorp.com/terraform/cli/import)
-[AWS S3 Bucket Import](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket#import)
+Dive deeper with [Terraform Import](https://developer.hashicorp.com/terraform/cli/import) and [AWS S3 Bucket Import](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket#import).
 
-### Fix Manual Configuration
+#### Tackling Manual Configurations
 
-If someone manually deletes or modifies a cloud resource using ClickOps, running a Terraform plan will aim to restore our infrastructure to its desired state, addressing the configuration drift.
+If cloud resources are manually tweaked or removed, a Terraform plan intends to revert the setup to its original state, rectifying the drift.
 
-## Fix using Terraform Refresh
+### Using `Terraform Refresh` for Corrections
 
 ```sh
 terraform apply -refresh-only -auto-approve
 ```
 
-## Terraform Modules
+## Modules in Terraform
 
-### Terraform Module Structure
+### Crafting Terraform Modules
 
-It is recommend to place modules in a `modules` directory when locally developing modules but you can name it whatever you like.
+Local module development is ideally done in a `modules` directory, but naming is flexible.
 
-### Passing Input Variables
+#### Passing Variables to Modules
 
-We can pass input variables to our module.
-The module has to declare the terraform variables in its own variables.tf
+Modules must declare their variables within a `variables.tf` file.
 
 ```tf
 module "terrahouse_aws" {
@@ -92,11 +90,11 @@ module "terrahouse_aws" {
 }
 ```
 
-### Modules Sources
+#### Source Variations for Modules
 
-Using the source we can import the module from various places eg:
-- locally
-- Github
+Modules can be sourced from different locations:
+- Local paths
+- GitHub
 - Terraform Registry
 
 ```tf
@@ -105,5 +103,44 @@ module "terrahouse_aws" {
 }
 ```
 
+More on [Module Sources](https://developer.hashicorp.com/terraform/language/modules/sources).
 
-[Modules Sources](https://developer.hashicorp.com/terraform/language/modules/sources)
+## Guidelines for Using ChatGPT with Terraform
+
+Bear in mind, LLMs like ChatGPT might not be updated with the freshest Terraform documentation. It's possible to get older, perhaps even deprecated, examples, especially concerning providers.
+
+## Terraform's File Management
+
+### `fileexists` Function
+
+This built-in function verifies if a file exists.
+
+```tf
+condition = fileexists(var.error_html_filepath)
+```
+
+Discover more at [fileexists documentation](https://developer.hashicorp.com/terraform/language/functions/fileexists).
+
+### `filemd5` Function
+
+Refer to the [filemd5 documentation](https://developer.hashicorp.com/terraform/language/functions/filemd5).
+
+### Utilizing the `path` Variable in Terraform
+
+Terraform's `path` variable aids in referencing local paths:
+- `path.module`: Fetches the current module's path.
+- `path.root`: Fetches the root module's path.
+  
+Learn more about the [Special Path Variable](https://developer.hashicorp.com/terraform/language/
+
+expressions/references#filesystem-and-workspace-info).
+
+For instance:
+
+```tf
+resource "aws_s3_object" "index_html" {
+  bucket = aws_s3_bucket.website_bucket.bucket
+  key    = "index.html"
+  source = "${path.root}/public/index.html"
+}
+```
