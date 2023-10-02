@@ -244,3 +244,61 @@ resource "aws_instance" "web" {
 ```
 
 [Detailed `remote-exec` documentation](https://developer.hashicorp.com/terraform/language/resources/provisioners/remote-exec)
+
+---
+### Collection Types
+
+- A *collection* type allows multiple values of one other type to be grouped together as a single value.
+  - The type of value *within* a collection is called its *element type*.
+
+**The three kinds of collection type**: list, map, set
+
+1. **List**
+   - It's like an array, you use an integer as the index to retrieve the value.
+   ``` 
+   variable "planet" {
+      type    = list
+      default = ["mars", "earth", "moon"]
+   }
+   username = var.users[0]
+   ```
+
+2. **Map**
+   - It's like a ruby hash or single nested json object. You use a key as the index to retrieve the value.
+   ```
+   variable "plans" {
+      type    = map
+      default = {
+        "PlanA" = "10 USD"
+        "PlanB" = "50 USD"
+        "PlanC" = "100 USD"
+      }
+   }
+   plan = var.plans["PlanB"]
+   ```
+
+3. **Set**
+   - Is similar to a list but has no secondary index or preserved ordering, all values must of the same type and will be cast to match based on first element.
+   ```
+   > toset(["a", "b", 3])
+   [
+     "a",
+     "b",
+     "3"
+   ]
+   ```
+
+---
+https://developer.hashicorp.com/terraform/language/resources/provisioners/remote-exec
+
+## For Each Expressions
+
+For each allows us to enumerate over complex data types
+
+```sh
+[for s in var.list : upper(s)]
+```
+
+This is mostly useful when you are creating multiples of a cloud resource and you want to reduce the amount of repetitive terraform code.
+
+[For Each Expressions](https://developer.hashicorp.com/terraform/language/expressions/for)
