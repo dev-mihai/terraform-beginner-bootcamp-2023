@@ -188,3 +188,59 @@ In Terraform's HCL (HashiCorp Configuration Language), you can leverage the `jso
 Plain data values such as Local Values and Input Variables don't have any side-effects to plan against and so they aren't valid in replace_triggered_by. You can use terraform_data's behavior of planning an action each time input changes to indirectly use a plain value to trigger replacement.
 
 https://developer.hashicorp.com/terraform/language/resources/terraform-data
+
+## Understanding Provisioners in Terraform
+
+Provisioners provide a mechanism for executing commands on specified compute instances, such as running an AWS CLI command.
+
+However, Hashicorp generally discourages their use, advocating for Configuration Management tools like Ansible as a more suitable alternative. Despite this, the capability is available for users.
+
+[Learn more about Provisioners](https://developer.hashicorp.com/terraform/language/resources/provisioners/syntax)
+
+### The `local-exec` Provisioner
+
+The `local-exec` provisioner triggers commands on the machine where the Terraform operations (like `plan` or `apply`) are being executed.
+
+Example:
+
+```tf
+resource "aws_instance" "web" {
+  # ...
+
+  provisioner "local-exec" {
+    command = "echo The server's IP address is ${self.private_ip}"
+  }
+}
+```
+
+[Detailed `local-exec` documentation](https://developer.hashicorp.com/terraform/language/resources/provisioners/local-exec)
+
+### The `remote-exec` Provisioner
+
+With `remote-exec`, commands can be executed on a targeted machine. To do this, necessary credentials (e.g., SSH details) must be provided for access.
+
+Example:
+
+```tf
+resource "aws_instance" "web" {
+  # ...
+
+  # Specifies the connection details for
+  # generic remote provisioners such as file or remote-exec
+  connection {
+    type     = "ssh"
+    user     = "root"
+    password = var.root_password
+    host     = self.public_ip
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "puppet apply",
+      "consul join ${aws_instance.web.private_ip}",
+    ]
+  }
+}
+```
+
+[Detailed `remote-exec` documentation](https://developer.hashicorp.com/terraform/language/resources/provisioners/remote-exec)
