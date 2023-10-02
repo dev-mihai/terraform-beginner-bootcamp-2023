@@ -144,3 +144,36 @@ resource "aws_s3_object" "index_html" {
   source = "${path.root}/public/index.html"
 }
 ```
+
+## Local Variables in Terraform
+
+In Terraform, local variables, commonly referred to as "locals," let us define variables for internal usage within the configuration. They come in handy especially when transforming or restructuring data for use within the configuration.
+
+```tf
+locals {
+  s3_origin_id = "MyS3Origin"
+}
+```
+[Learn more about Local Values](https://developer.hashicorp.com/terraform/language/values/locals)
+
+## Data Sources in Terraform
+
+Data sources in Terraform allow us to retrieve and use details from existing infrastructure or external sources. It's particularly useful when we need information from cloud resources without directly managing them within our configuration.
+
+```tf
+data "aws_caller_identity" "current" {}
+
+output "account_id" {
+  value = data.aws_caller_identity.current.account_id
+}
+```
+[Learn more about Data Sources](https://developer.hashicorp.com/terraform/language/data-sources)
+
+## JSON Handling in Terraform
+
+In Terraform's HCL (HashiCorp Configuration Language), you can leverage the `jsonencode` function to represent configurations as inline JSON structures.
+
+```tf
+> jsonencode({"hello"="world"})
+{"hello":"world"}
+```
