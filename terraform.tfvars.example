@@ -1,6 +1,9 @@
-user_uuid = "a13f9d10-e288-4894-8088-b80ebb087b57"
-bucket_name = "e288-4894-8088-b80ebb087b57"
-index_html_filepath="/workspace/terraform-beginner-bootcamp-2023/public/index.html"
-error_html_filepath="/workspace/terraform-beginner-bootcamp-2023/public/error.html"
-assets_path="/workspace/terraform-beginner-bootcamp-2023/public/assets/"
-content_version=1
+terratowns_endpoint="https://terratowns.cloud/api"
+juventus = {
+  public_path = "/workspace/terraform-beginner-bootcamp-2023/public/juventus"
+  content_version = 2 
+}
+partitionguide = {
+  public_path = "/workspace/terraform-beginner-bootcamp-2023/public/partitionguide"
+  content_version = 1 
+}
