@@ -45,20 +45,20 @@ DESCRIPTION
   content_version = var.juventus.content_version
 }
 
-module "home_partitionguide_hosting" {
-  source = "./modules/terrahome_aws"
-  user_uuid = var.teacherseat_user_uuid
-  public_path = var.partitionguide.public_path
-  bucket_name = var.bucket_name
-  content_version = var.partitionguide.content_version
-}
+# module "home_partitionguide_hosting" {
+#   source = "./modules/terrahome_aws"
+#   user_uuid = var.teacherseat_user_uuid
+#   public_path = var.partitionguide.public_path
+#   bucket_name = var.bucket_name
+#   content_version = var.partitionguide.content_version
+# }
 
-resource "terratowns_home" "home_partitionguide" {
-  name = "How to Increase the Size of the Root Partition"
-  description = <<DESCRIPTION
-This page provides a structured guide on how to increase the size of the root (/) partition, specifically when it's an LVM logical volume.
-DESCRIPTION
-  domain_name = module.home_partitionguide_hosting.domain_name
-  town = "missingo"
-  content_version = 1
-}
+# resource "terratowns_home" "home_partitionguide" {
+#   name = "How to Increase the Size of the Root Partition"
+#   description = <<DESCRIPTION
+# This page provides a structured guide on how to increase the size of the root (/) partition, specifically when it's an LVM logical volume.
+# DESCRIPTION
+#   domain_name = module.home_partitionguide_hosting.domain_name
+#   town = "missingo"
+#   content_version = 1
+# }
