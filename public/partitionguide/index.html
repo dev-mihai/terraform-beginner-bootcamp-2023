@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Increase the Size of the Root Partition</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2em;
+        }
+
+        code {
+            display: block;
+            padding: 1em;
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 1em 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Increase the size of the root / partition</h1>
+    <p>
+        <img src="/partitionguide/assets/partition.jpg" width="500" height="500" alt="Partition">
+
+        If you want to increase the size of the root / partition, which is an LVM logical volume in your case (/dev/mapper/ubuntu--vg-ubuntu--lv), you'll have to follow these general steps:
+    </p>
+
+    <ol>
+        <li><strong>Ensure there's unallocated space in the Volume Group (VG)</strong>: Before you can expand a Logical Volume (LV), you need to make sure there's free space in its parent VG.</li>
+        <li><strong>Resize the Logical Volume (LV)</strong>: Once you've confirmed there's enough free space in the VG, you can resize the LV.</li>
+        <li><strong>Resize the filesystem</strong>: After the LV has been expanded, you'll also need to resize the filesystem on it to make use of the new space.</li>
+    </ol>
+
+    <h2>1. Check for free space in the VG:</h2>
+    <code>vgdisplay</code>
+    <p>
+        Look for the "Free  PE / Size" entry. This will tell you how much unallocated space is available in the VG. If there's enough space to expand the root LV by the amount you desire, you can proceed to the next step.
+    </p>
+    <p>
+        If there's not enough free space, you may need to:
+        <ul>
+            <li>Reduce the size of another LV in the same VG (if possible).</li>
+            <li>Add a new physical volume (e.g., another disk or partition) to the VG.</li>
+            <li>If /dev/sda3 is the Physical Volume for this VG and it's not fully allocated, you might be able to extend it to fill unallocated space on the disk and then extend the VG to utilize that new space.</li>
+        </ul>
+    </p>
+
+    <h2>2. Resize the Logical Volume:</h2>
+    <p>
+        Replace SIZE with the amount you want to increase, for example, +10G to increase by 10GB:
+    </p>
+    <code>lvextend -L +SIZE /dev/mapper/ubuntu--vg-ubuntu--lv</code>
+
+    <h2>3. Resize the filesystem:</h2>
+    <p>
+        If you're using ext4 (which is common for Ubuntu root filesystems):
+    </p>
+    <code>resize2fs /dev/mapper/ubuntu--vg-ubuntu--lv</code>
+
+    <p>
+        If you're using XFS:
+    </p>
+    <code>xfs_growfs /dev/mapper/ubuntu--vg-ubuntu--lv</code>
+
+    <p>
+        You should identify the type of the filesystem before running the resize command. You can do this with: <code>df -Th</code>
+    </p>
+
+    <p>
+        <strong>Warning</strong>: Before making changes to disk partitions, LVs, or filesystems, it's essential to make backups of any important data. If possible, test these procedures in a non-production environment first to familiarize yourself with them. If you're unsure, seek assistance from someone with experience in disk and LVM management.
+    </p>
+
+</body>
+</html>
