@@ -41,7 +41,7 @@ resource "terratowns_home" "home" {
 An Italian Icon since 1897
 DESCRIPTION
   domain_name = module.home_juventus_hosting.domain_name
-  town = "missingo"
+  town = "the-nomad-pad"
   content_version = var.juventus.content_version
 }
 
